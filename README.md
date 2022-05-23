@@ -64,14 +64,14 @@ This makefile will look like this:
         
         RUST_LIB_NAME=todo
         RUST_LIB_DIR_NAME=rust
-        
-        
+        RUST_INPUT_FILE=api.rs
+
         GENERATED_FILE_PREFIX=bridge_generated
         
         DART_GENERATED_FILE=todo_services_impl.dart
         DART_GENERATED_DECL_FILE =todo_services.dart
         
-        RUST_API_LOCATION=$(PROJECT_LOCATION)/$(RUST_LIB_DIR_NAME)/src/api.rs
+        RUST_API_LOCATION=$(PROJECT_LOCATION)/$(RUST_LIB_DIR_NAME)/src/$(RUST_INPUT_FILE)
         DART_GEN_DIR_LOCATION =$(PROJECT_LOCATION)/lib/api
         DART_GEN_LOCATION=$(DART_GEN_DIR_LOCATION)/$(DART_GENERATED_FILE)
         DART_GEN_DECL_LOCATION=$(DART_GEN_DIR_LOCATION)/$(DART_GENERATED_DECL_FILE)
@@ -290,5 +290,37 @@ Our cargo.toml file look like this:
 
 <br>
 <details>
-    <summary> <strong>STEP 6: Add  </strong></summary>
+    <summary> <strong>STEP 6: Add Rust code </strong></summary>
+
+Create a rust file called as configure in **_Makefile_** variable **RUST_INPUT_FILE**
+
+</details>
+
+<br>
+<details>
+    <summary> <strong>STEP 7: Generate dart code </strong></summary>
+
+In rust library directory, run :
+
+    make init  \
+    make generate \
+    make ios \
+    make android
+
+In rust library directory, the file _**bridge_generated.rs_** will be generated.
+
+In Flutter **ios/Runner** directory, two files will be generated:
+ 
+- _**bridge_generated.h**_
+- **_libtodo.a_**
+
+In Flutter **android** directory a new directory _**/app/src/main/jniLibs**_ will be generated
+
+In Flutter lib directory a new directory 
+
+</details>
+
+<br>
+<details>
+    <summary> <strong>STEP 8: Call rust code in flutter project</strong></summary>
 </details>

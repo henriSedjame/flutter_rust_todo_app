@@ -1,0 +1,6 @@
+datasource:
+  host: localhost
+  port: 5432
+  username: hsedjame
+  password: hsedjame
+  database: postgres
