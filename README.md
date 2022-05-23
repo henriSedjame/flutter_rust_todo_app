@@ -307,7 +307,7 @@ In rust library directory, run :
     make ios \
     make android
 
-In rust library directory, the file _**bridge_generated.rs_** will be generated.
+In rust library directory, the file **bridge_generated.rs** will be generated.
 
 In Flutter **ios/Runner** directory, two files will be generated:
  
@@ -316,11 +316,14 @@ In Flutter **ios/Runner** directory, two files will be generated:
 
 In Flutter **android** directory a new directory _**/app/src/main/jniLibs**_ will be generated
 
-In Flutter lib directory a new directory 
+In Flutter lib directory a new directory with two files will be created:
+
+- **_api/todo_services.dart_**
+- _**api/todo_services_impl.dart**_
 
 </details>
 
 <br>
 <details>
-    <summary> <strong>STEP 8: Call rust code in flutter project</strong></summary>
+    <summary> <strong>STEP 8: Configure ios flutter </strong></summary>
 </details>
