@@ -16,16 +16,42 @@ class TodoServicesImpl extends FlutterRustBridgeBase<TodoServicesWire>
 
   TodoServicesImpl.raw(TodoServicesWire inner) : super(inner);
 
-  Future<void> dummy({required TodoEvent todoEvent, dynamic hint}) =>
+  Future<void> dummyTodoEvent({required TodoEvent todoEvent, dynamic hint}) =>
       executeNormal(FlutterRustBridgeTask(
-        callFfi: (port_) => inner.wire_dummy(
+        callFfi: (port_) => inner.wire_dummy_todo_event(
             port_, _api2wire_box_autoadd_todo_event(todoEvent)),
         parseSuccessData: _wire2api_unit,
         constMeta: const FlutterRustBridgeTaskConstMeta(
-          debugName: "dummy",
+          debugName: "dummy_todo_event",
           argNames: ["todoEvent"],
         ),
         argValues: [todoEvent],
+        hint: hint,
+      ));
+
+  Future<void> dummyLogMessage(
+          {required LogMessage logMessage, dynamic hint}) =>
+      executeNormal(FlutterRustBridgeTask(
+        callFfi: (port_) => inner.wire_dummy_log_message(
+            port_, _api2wire_box_autoadd_log_message(logMessage)),
+        parseSuccessData: _wire2api_unit,
+        constMeta: const FlutterRustBridgeTaskConstMeta(
+          debugName: "dummy_log_message",
+          argNames: ["logMessage"],
+        ),
+        argValues: [logMessage],
+        hint: hint,
+      ));
+
+  Stream<LogMessage> logStream({dynamic hint}) =>
+      executeStream(FlutterRustBridgeTask(
+        callFfi: (port_) => inner.wire_log_stream(port_),
+        parseSuccessData: _wire2api_log_message,
+        constMeta: const FlutterRustBridgeTaskConstMeta(
+          debugName: "log_stream",
+          argNames: [],
+        ),
+        argValues: [],
         hint: hint,
       ));
 
@@ -130,6 +156,13 @@ class TodoServicesImpl extends FlutterRustBridgeBase<TodoServicesWire>
     return ptr;
   }
 
+  ffi.Pointer<wire_LogMessage> _api2wire_box_autoadd_log_message(
+      LogMessage raw) {
+    final ptr = inner.new_box_autoadd_log_message();
+    _api_fill_to_wire_log_message(raw, ptr.ref);
+    return ptr;
+  }
+
   ffi.Pointer<wire_Todo> _api2wire_box_autoadd_todo(Todo raw) {
     final ptr = inner.new_box_autoadd_todo();
     _api_fill_to_wire_todo(raw, ptr.ref);
@@ -156,6 +189,10 @@ class TodoServicesImpl extends FlutterRustBridgeBase<TodoServicesWire>
   }
 
   int _api2wire_event_type(EventType raw) {
+    return raw.index;
+  }
+
+  int _api2wire_log_level(LogLevel raw) {
     return raw.index;
   }
 
@@ -193,6 +230,11 @@ class TodoServicesImpl extends FlutterRustBridgeBase<TodoServicesWire>
     _api_fill_to_wire_create_todo_request(apiObj, wireObj.ref);
   }
 
+  void _api_fill_to_wire_box_autoadd_log_message(
+      LogMessage apiObj, ffi.Pointer<wire_LogMessage> wireObj) {
+    _api_fill_to_wire_log_message(apiObj, wireObj.ref);
+  }
+
   void _api_fill_to_wire_box_autoadd_todo(
       Todo apiObj, ffi.Pointer<wire_Todo> wireObj) {
     _api_fill_to_wire_todo(apiObj, wireObj.ref);
@@ -216,6 +258,12 @@ class TodoServicesImpl extends FlutterRustBridgeBase<TodoServicesWire>
   void _api_fill_to_wire_create_todo_request(
       CreateTodoRequest apiObj, wire_CreateTodoRequest wireObj) {
     wireObj.label = _api2wire_String(apiObj.label);
+  }
+
+  void _api_fill_to_wire_log_message(
+      LogMessage apiObj, wire_LogMessage wireObj) {
+    wireObj.level = _api2wire_log_level(apiObj.level);
+    wireObj.message = _api2wire_String(apiObj.message);
   }
 
   void _api_fill_to_wire_opt_box_autoadd_todo(
@@ -271,6 +319,20 @@ EventType _wire2api_event_type(dynamic raw) {
 
 List<Todo> _wire2api_list_todo(dynamic raw) {
   return (raw as List<dynamic>).map(_wire2api_todo).toList();
+}
+
+LogLevel _wire2api_log_level(dynamic raw) {
+  return LogLevel.values[raw];
+}
+
+LogMessage _wire2api_log_message(dynamic raw) {
+  final arr = raw as List<dynamic>;
+  if (arr.length != 2)
+    throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+  return LogMessage(
+    level: _wire2api_log_level(arr[0]),
+    message: _wire2api_String(arr[1]),
+  );
 }
 
 String? _wire2api_opt_String(dynamic raw) {
@@ -355,22 +417,53 @@ class TodoServicesWire implements FlutterRustBridgeWireBase {
           lookup)
       : _lookup = lookup;
 
-  void wire_dummy(
+  void wire_dummy_todo_event(
     int port_,
     ffi.Pointer<wire_TodoEvent> todo_event,
   ) {
-    return _wire_dummy(
+    return _wire_dummy_todo_event(
       port_,
       todo_event,
     );
   }
 
-  late final _wire_dummyPtr = _lookup<
+  late final _wire_dummy_todo_eventPtr = _lookup<
       ffi.NativeFunction<
-          ffi.Void Function(
-              ffi.Int64, ffi.Pointer<wire_TodoEvent>)>>('wire_dummy');
-  late final _wire_dummy = _wire_dummyPtr
+          ffi.Void Function(ffi.Int64,
+              ffi.Pointer<wire_TodoEvent>)>>('wire_dummy_todo_event');
+  late final _wire_dummy_todo_event = _wire_dummy_todo_eventPtr
       .asFunction<void Function(int, ffi.Pointer<wire_TodoEvent>)>();
+
+  void wire_dummy_log_message(
+    int port_,
+    ffi.Pointer<wire_LogMessage> log_message,
+  ) {
+    return _wire_dummy_log_message(
+      port_,
+      log_message,
+    );
+  }
+
+  late final _wire_dummy_log_messagePtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Void Function(ffi.Int64,
+              ffi.Pointer<wire_LogMessage>)>>('wire_dummy_log_message');
+  late final _wire_dummy_log_message = _wire_dummy_log_messagePtr
+      .asFunction<void Function(int, ffi.Pointer<wire_LogMessage>)>();
+
+  void wire_log_stream(
+    int port_,
+  ) {
+    return _wire_log_stream(
+      port_,
+    );
+  }
+
+  late final _wire_log_streamPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int64)>>(
+          'wire_log_stream');
+  late final _wire_log_stream =
+      _wire_log_streamPtr.asFunction<void Function(int)>();
 
   void wire_load_app_config(
     int port_,
@@ -494,6 +587,16 @@ class TodoServicesWire implements FlutterRustBridgeWireBase {
       _new_box_autoadd_create_todo_requestPtr
           .asFunction<ffi.Pointer<wire_CreateTodoRequest> Function()>();
 
+  ffi.Pointer<wire_LogMessage> new_box_autoadd_log_message() {
+    return _new_box_autoadd_log_message();
+  }
+
+  late final _new_box_autoadd_log_messagePtr =
+      _lookup<ffi.NativeFunction<ffi.Pointer<wire_LogMessage> Function()>>(
+          'new_box_autoadd_log_message');
+  late final _new_box_autoadd_log_message = _new_box_autoadd_log_messagePtr
+      .asFunction<ffi.Pointer<wire_LogMessage> Function()>();
+
   ffi.Pointer<wire_Todo> new_box_autoadd_todo() {
     return _new_box_autoadd_todo();
   }
@@ -608,6 +711,13 @@ class wire_TodoEvent extends ffi.Struct {
   external ffi.Pointer<wire_uint_8_list> error_message;
 
   external ffi.Pointer<wire_Todo> data;
+}
+
+class wire_LogMessage extends ffi.Struct {
+  @ffi.Int32()
+  external int level;
+
+  external ffi.Pointer<wire_uint_8_list> message;
 }
 
 class wire_CreateTodoRequest extends ffi.Struct {

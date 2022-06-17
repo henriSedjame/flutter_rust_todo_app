@@ -5,4 +5,5 @@ mod config;
 mod api;
 mod repos;
 mod types;
+mod logging;
 

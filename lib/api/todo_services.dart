@@ -8,7 +8,13 @@ import 'dart:typed_data';
 
 abstract class TodoServices {
   /// Cette methode permet de générer une impl de DartCObject pour l'objet TodoEvent
-  Future<void> dummy({required TodoEvent todoEvent, dynamic hint});
+  Future<void> dummyTodoEvent({required TodoEvent todoEvent, dynamic hint});
+
+  Future<void> dummyLogMessage({required LogMessage logMessage, dynamic hint});
+
+  /// ## Init log stream
+  ///
+  Stream<LogMessage> logStream({dynamic hint});
 
   /// ## Load App Config
   ///
@@ -58,6 +64,22 @@ enum EventType {
   Updated,
   Deleted,
   Error,
+}
+
+enum LogLevel {
+  INFO,
+  WARNING,
+  ERROR,
+}
+
+class LogMessage {
+  final LogLevel level;
+  final String message;
+
+  LogMessage({
+    required this.level,
+    required this.message,
+  });
 }
 
 enum Status {

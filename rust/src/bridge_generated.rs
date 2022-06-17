@@ -22,21 +22,50 @@ use crate::data::dto::requests::UpdateTodoRequest;
 use crate::data::dto::Status;
 use crate::data::dto::Todo;
 use crate::data::dto::TodoData;
+use crate::logging::LogLevel;
+use crate::logging::LogMessage;
 
 // Section: wire functions
 
 #[no_mangle]
-pub extern "C" fn wire_dummy(port_: i64, todo_event: *mut wire_TodoEvent) {
+pub extern "C" fn wire_dummy_todo_event(port_: i64, todo_event: *mut wire_TodoEvent) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap(
         WrapInfo {
-            debug_name: "dummy",
+            debug_name: "dummy_todo_event",
             port: Some(port_),
             mode: FfiCallMode::Normal,
         },
         move || {
             let api_todo_event = todo_event.wire2api();
-            move |task_callback| Ok(dummy(api_todo_event))
+            move |task_callback| Ok(dummy_todo_event(api_todo_event))
         },
+    )
+}
+
+#[no_mangle]
+pub extern "C" fn wire_dummy_log_message(port_: i64, log_message: *mut wire_LogMessage) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap(
+        WrapInfo {
+            debug_name: "dummy_log_message",
+            port: Some(port_),
+            mode: FfiCallMode::Normal,
+        },
+        move || {
+            let api_log_message = log_message.wire2api();
+            move |task_callback| Ok(dummy_log_message(api_log_message))
+        },
+    )
+}
+
+#[no_mangle]
+pub extern "C" fn wire_log_stream(port_: i64) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap(
+        WrapInfo {
+            debug_name: "log_stream",
+            port: Some(port_),
+            mode: FfiCallMode::Stream,
+        },
+        move || move |task_callback| log_stream(task_callback.stream_sink()),
     )
 }
 
@@ -151,6 +180,13 @@ pub struct wire_CreateTodoRequest {
 
 #[repr(C)]
 #[derive(Clone)]
+pub struct wire_LogMessage {
+    level: i32,
+    message: *mut wire_uint_8_list,
+}
+
+#[repr(C)]
+#[derive(Clone)]
 pub struct wire_Todo {
     id: *mut wire_uint_8_list,
     data: *mut wire_TodoData,
@@ -194,6 +230,11 @@ pub struct wire_UpdateTodoRequest {
 #[no_mangle]
 pub extern "C" fn new_box_autoadd_create_todo_request() -> *mut wire_CreateTodoRequest {
     support::new_leak_box_ptr(wire_CreateTodoRequest::new_with_null_ptr())
+}
+
+#[no_mangle]
+pub extern "C" fn new_box_autoadd_log_message() -> *mut wire_LogMessage {
+    support::new_leak_box_ptr(wire_LogMessage::new_with_null_ptr())
 }
 
 #[no_mangle]
@@ -258,6 +299,13 @@ impl Wire2Api<CreateTodoRequest> for *mut wire_CreateTodoRequest {
     }
 }
 
+impl Wire2Api<LogMessage> for *mut wire_LogMessage {
+    fn wire2api(self) -> LogMessage {
+        let wrap = unsafe { support::box_from_leak_ptr(self) };
+        (*wrap).wire2api().into()
+    }
+}
+
 impl Wire2Api<Todo> for *mut wire_Todo {
     fn wire2api(self) -> Todo {
         let wrap = unsafe { support::box_from_leak_ptr(self) };
@@ -302,6 +350,26 @@ impl Wire2Api<EventType> for i32 {
             2 => EventType::Deleted,
             3 => EventType::Error,
             _ => unreachable!("Invalid variant for EventType: {}", self),
+        }
+    }
+}
+
+impl Wire2Api<LogLevel> for i32 {
+    fn wire2api(self) -> LogLevel {
+        match self {
+            0 => LogLevel::INFO,
+            1 => LogLevel::WARNING,
+            2 => LogLevel::ERROR,
+            _ => unreachable!("Invalid variant for LogLevel: {}", self),
+        }
+    }
+}
+
+impl Wire2Api<LogMessage> for wire_LogMessage {
+    fn wire2api(self) -> LogMessage {
+        LogMessage {
+            level: self.level.wire2api(),
+            message: self.message.wire2api(),
         }
     }
 }
@@ -388,6 +456,15 @@ impl NewWithNullPtr for wire_CreateTodoRequest {
     }
 }
 
+impl NewWithNullPtr for wire_LogMessage {
+    fn new_with_null_ptr() -> Self {
+        Self {
+            level: Default::default(),
+            message: core::ptr::null_mut(),
+        }
+    }
+}
+
 impl NewWithNullPtr for wire_Todo {
     fn new_with_null_ptr() -> Self {
         Self {
@@ -438,6 +515,24 @@ impl support::IntoDart for EventType {
         .into_dart()
     }
 }
+
+impl support::IntoDart for LogLevel {
+    fn into_dart(self) -> support::DartCObject {
+        match self {
+            Self::INFO => 0,
+            Self::WARNING => 1,
+            Self::ERROR => 2,
+        }
+        .into_dart()
+    }
+}
+
+impl support::IntoDart for LogMessage {
+    fn into_dart(self) -> support::DartCObject {
+        vec![self.level.into_dart(), self.message.into_dart()].into_dart()
+    }
+}
+impl support::IntoDartExceptPrimitive for LogMessage {}
 
 impl support::IntoDart for Status {
     fn into_dart(self) -> support::DartCObject {

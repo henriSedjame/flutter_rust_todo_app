@@ -1,0 +1,29 @@
+PODS:
+  - Flutter (1.0.0)
+  - flutter_openssl_crypto (0.0.1):
+    - Flutter
+    - OpenSSL-Universal
+  - OpenSSL-Universal (1.1.1500)
+
+DEPENDENCIES:
+  - Flutter (from `Flutter`)
+  - flutter_openssl_crypto (from `.symlinks/plugins/flutter_openssl_crypto/ios`)
+
+SPEC REPOS:
+  trunk:
+    - OpenSSL-Universal
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+  flutter_openssl_crypto:
+    :path: ".symlinks/plugins/flutter_openssl_crypto/ios"
+
+SPEC CHECKSUMS:
+  Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
+  flutter_openssl_crypto: 636ad25f56fbe0f45b9e13b8589540b341a486a1
+  OpenSSL-Universal: 5d1de8d199ea9684d7ee48a8caa38d5dbfee1981
+
+PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c
+
+COCOAPODS: 1.11.2

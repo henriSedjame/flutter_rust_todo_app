@@ -1,6 +1,7 @@
 datasource:
-  host: localhost
+  host: ec2-63-35-156-160.eu-west-1.compute.amazonaws.com
   port: 5432
-  username: hsedjame
-  password: hsedjame
-  database: postgres
+  username: humkrvgiyznpec
+  password: 42383f28c5e77c0b1c2bda228365c98994541444694067838a558c9cd15c73d2
+  database: dfe74o75gcfdhp
+  ssl_mode: require

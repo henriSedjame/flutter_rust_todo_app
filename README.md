@@ -9,7 +9,9 @@ We will use the  [flutter_rust_bridge](http://cjycode.com/flutter_rust_bridge/) 
 Feel free to consult the library documentation [here](http://cjycode.com/flutter_rust_bridge/).
 
 
-   ### 🏁 GET STARTED
+   ### 🏁 GET STARTED 
+
+Let's start by creating our project and integrating **_flutter_rust_brigde_** library in it.
 
 <br>
 
@@ -326,4 +328,42 @@ In Flutter lib directory a new directory with two files will be created:
 <br>
 <details>
     <summary> <strong>STEP 8: Configure ios flutter </strong></summary>
+
+In order to access rust functions in our ios app we need to make some configuration.
+
+1 - In file _ios/Runner/Runner-Bridging-Header.h_, import the generated header _**bridge_generated.h**_
+
+Your file's content must look like this:
+
+    #import "GeneratedPluginRegistrant.h"
+    #import "bridge_generated.h"
+
+2- In file _ios/Runner/AppDelegate.swift_, add the following line in the function application, just before the return :
+
+    print("dummy_value=\(dummy_method_to_enforce_bundling())")
+
+Your file content must look like this:
+
+    import UIKit
+    import Flutter
+
+    @UIApplicationMain
+    @objc class AppDelegate: FlutterAppDelegate {
+    override func application(
+    _ application: UIApplication,
+    didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
+    ) -> Bool {
+            GeneratedPluginRegistrant.register(with: self)
+            print("dummy_value=\(dummy_method_to_enforce_bundling())")
+            return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+        }
+    }
+
+3- Add the lib file  generated ios/Runner/libtodo.a in your ios app project as follows: 
+
+* Open your project with Xcode
+* In **_Targets/Runner_** window, add an item in **_Frameworks, Librairies and Embedded Content_** section
+
+<img src="assets/add_lib_ios.png">`
+
 </details>

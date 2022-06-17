@@ -1,0 +1,7 @@
+datasource:
+  host: 10.0.2.2
+  port: 5432
+  username: hsedjame
+  password: hsedjame
+  database: postgres
+  ssl_mode: prefer

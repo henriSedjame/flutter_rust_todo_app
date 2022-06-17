@@ -7,6 +7,8 @@ import 'package:flutter/services.dart';
 import 'package:todo_app/api/todo_services_impl.dart';
 import 'package:todo_app/todo_page.dart';
 
+final config_file_path = Platform.isIOS ? 'config/app_ios.yml' : 'config/app_android.yml';
+
 const base = 'todo';
 final path = Platform.isWindows
     ? '$base.dll'
@@ -17,16 +19,18 @@ final dylib =
 
 final api = TodoServicesImpl(dylib);
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  loadConfig().then((config) {
-    api.loadAppConfig(config: config).then((_) {
-      api.initDb().then((_) => runApp(const MyApp()));
-    });
+  var config = await loadConfig();
+  api.logStream().listen((event) {
+    print("Receive log from rust :::: ${event.message}");
   });
+  await api.loadAppConfig(config: config);
+  await api.initDb();
+  runApp(const MyApp());
 }
 
-// Load app config located in file config/app.yml
+// Load app config located in file config/app_android.yml
 Future<String> loadConfig() async {
   return rootBundle.loadString("config/app.yml");
 }

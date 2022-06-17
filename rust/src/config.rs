@@ -11,6 +11,7 @@ pub struct DBConfig {
     pub username: String,
     pub password: String,
     pub database: String,
+    pub ssl_mode: String,
 }
 
 /// ToString trait implementation
@@ -20,8 +21,8 @@ impl ToString for DBConfig {
     /// Returns the database url
     fn to_string(&self) -> String {
         format!(
-            "postgres://{}:{}@{}:{}/{}",
-            self.password, self.username, self.host, self.port, self.database
+            "postgres://{}:{}@{}:{}/{}?sslmode={}",
+             self.username, self.password, self.host, self.port, self.database, self.ssl_mode
         )
     }
 }
